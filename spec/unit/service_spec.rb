@@ -1,6 +1,6 @@
-require 'rails_helper'
+require 'spec_helper'
 
-describe Fulfiller::SunFrog::Service do
+describe SunFrog::Service do
   describe '#post' do
     it 'should post orders' do
       batch  = double

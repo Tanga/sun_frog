@@ -1,6 +1,6 @@
-require 'rails_helper'
+require 'spec_helper'
 
-describe Fulfiller::SunFrog::Models::Batch do
+describe SunFrog::Models::Batch do
   let(:client) { double }
   let(:order)  { double }
 

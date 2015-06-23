@@ -1,6 +1,6 @@
-require 'rails_helper'
+require 'integration_helper'
 
-describe Fulfiller::SunFrog::ApiClient do
+describe SunFrog::ApiClient do
 
   # This is the id sun frog assigned to our batch when the cassette was recorded
   def batch_id
@@ -17,7 +17,7 @@ describe Fulfiller::SunFrog::ApiClient do
 
   describe '#add_order' do
     it 'should add an order to the batch' do
-      sun_frog_order = Fulfiller::SunFrog::Models::Order.new(ApiModels::Order.make)
+      sun_frog_order = SunFrog::Models::Order.new(ApiModels::Order.make)
 
       VCR.use_cassette('sun_frog_add_order') do
         described_class.add_order(order: sun_frog_order.to_hash, batch_id: batch_id)

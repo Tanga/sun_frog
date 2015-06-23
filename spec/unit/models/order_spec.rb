@@ -1,51 +1,72 @@
-require 'rails_helper'
+require 'spec_helper'
 
-describe Fulfiller::SunFrog::Models::Order do
+describe SunFrog::Models::Order do
   describe '#to_hash' do
-    let(:item)            { ApiModels::Item.make }
-    let(:shipment)        { ApiModels::Shipment.make(items: [item]) }
-    let(:order)           { ApiModels::Order.make(shipments: [shipment]) }
-    let(:sun_frog_order)  { described_class.new(order) }
+    let(:item1) { SunFrog::Models::Item.new(size: 'L', quantity: 5, m: '44091') }
+    let(:item2) { SunFrog::Models::Item.new(size: 'M', quantity: 1, m: '44092') }
+
+    let(:order)  { described_class.new(
+      email:           "fake@example.com",
+      name:            "Fake User",
+      address1:        "500 Pine St",
+      city:            "Seattle",
+      state:           "Washington",
+      shipping_zip_code: "98105",
+      country:         "United States",
+      items:           [item1, item2]
+    ) }
 
     describe 'Email' do
-      it {expect(sun_frog_order.to_hash[:email]).to be == order.email_address}
+      it {expect(order.to_hash[:email]).to be == order.email}
     end
 
     describe "Name" do
-      it {expect(sun_frog_order.to_hash[:name]).to be == "#{order.billing_address.first_name} #{order.billing_address.last_name}"}
+      it {expect(order.to_hash[:name]).to be == order.name}
     end
 
     describe "Address" do
-      it {expect(sun_frog_order.to_hash[:address1]).to be == order.billing_address.address1}
+      it {expect(order.to_hash[:address1]).to be == order.address1}
     end
 
     describe "City" do
-      it {expect(sun_frog_order.to_hash[:city]).to be == order.billing_address.city}
+      it {expect(order.to_hash[:city]).to be == order.city}
     end
 
     describe "State" do
-      it {expect(sun_frog_order.to_hash[:state]).to be == "Washington"}
+      it {expect(order.to_hash[:state]).to be == "Washington"}
     end
 
     describe "ShippingZipCode" do
-      it {expect(sun_frog_order.to_hash[:shippingZipCode]).to be == order.billing_address.postal_code}
+      it {expect(order.to_hash[:shippingZipCode]).to be == order.shipping_zip_code}
     end
 
     describe "Country" do
-      it {expect(sun_frog_order.to_hash[:country]).to be == "United States"}
+      it {expect(order.to_hash[:country]).to be == "United States"}
     end
 
     context "Items" do
       describe "M_1" do
-        it {expect(sun_frog_order.to_hash[:m_1]).to be == '44091'}
+        it {expect(order.to_hash[:m_1]).to be == item1.m}
       end
 
       describe "Size_1" do
-        it {expect(sun_frog_order.to_hash[:size_1]).to be == item.variants["Size"]}
+        it {expect(order.to_hash[:size_1]).to be == item1.size}
       end
 
       describe "Quantity_1" do
-        it {expect(sun_frog_order.to_hash[:quantity_1]).to be == item.quantity }
+        it {expect(order.to_hash[:quantity_1]).to be == item1.quantity}
+      end
+
+      describe "M_2" do
+        it {expect(order.to_hash[:m_2]).to be == item2.m}
+      end
+
+      describe "Size_2" do
+        it {expect(order.to_hash[:size_2]).to be == item2.size}
+      end
+
+      describe "Quantity_2" do
+        it {expect(order.to_hash[:quantity_2]).to be == item2.quantity}
       end
     end
   end
